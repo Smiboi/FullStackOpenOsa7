@@ -72,6 +72,7 @@ const CreateNew = (props) => {
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
 
+  const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -81,6 +82,8 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    props.anecdoteCreated(content)
+    navigate('/')
   }
 
   return (
@@ -126,6 +129,13 @@ const App = () => {
 
   const [notification, setNotification] = useState('')
 
+  const anecdoteCreated = (new_anecdote) => {
+    setNotification(`a new anecdote ${new_anecdote} created!`)
+    setTimeout(() => {
+      setNotification('')
+    }, 5000)
+  }
+
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
@@ -154,10 +164,11 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu anecdotes={anecdotes} />
+      <div>{notification}</div>
       <Routes>
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
         <Route path="/anecdotes/:id" element={<Anecdote anecdote={anecdote} />} />
-        <Route path="/create" element={<CreateNew addNew={addNew} />} />
+        <Route path="/create" element={<CreateNew addNew={addNew} anecdoteCreated={anecdoteCreated} />} />
         <Route path="/about" element={<About/>} />
       </Routes>
       <Footer />
