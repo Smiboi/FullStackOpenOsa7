@@ -1,39 +1,48 @@
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
-const initialBlogs = [
+const initialUsers = [
   {
-    title: "First Blog",
-    author: "Author 1",
-    url: "http://example.com/1",
-    likes: 5
-  },
-  {
-    title: "Second Blog",
-    author: "Author 2",
-    url: "http://example.com/2",
-    likes: 10
-  },
-  {
-    title: "Third Blog",
-    author: "Author 3",
-    url: "http://example.com/3",
-    likes: 7
+    blogs: [],
+    username: "tarzan",
+    name: "Tarmo Sukkula",
+    password: "pass"
   }
 ]
 
-blogsInDb = async () => {
+const initialBlogs = [
+  {
+    title: 'Jarkon ploki',
+    author: 'Jarkko Jurkka',
+    url: "https://www.jartsunosote.com",
+    likes: 56
+  },
+  {
+    title: 'Näin se elämä makaa',
+    author: 'Hellevi Hälläväliä',
+    url: "https://www.elämä.com",
+    likes: 2
+  }
+]
+
+const nonExistingId = async () => {
+  const blog = new Blog({ title: 'willremovethissoon',  author: 'Will Removethissoon',  title: 'https://www.willremovethissoon.com',  })
+  await blog.save()
+  await blog.remove()
+
+  return blog._id.toString()
+}
+
+const blogsInDb = async () => {
   const blogs = await Blog.find({})
   return blogs.map(blog => blog.toJSON())
 }
 
-usersInDb = async () => {
+const usersInDb = async () => {
   const users = await User.find({})
   return users.map(u => u.toJSON())
 }
 
 module.exports = {
-  initialBlogs,
-  blogsInDb,
-  usersInDb
+  initialUsers, initialBlogs, nonExistingId, blogsInDb, usersInDb
 }

@@ -1,67 +1,73 @@
+const lodash = require('lodash')
+
 const dummy = (blogs) => {
   return 1
 }
 
 const totalLikes = (blogs) => {
-  return blogs.reduce((sum, blog) => sum + blog.likes, 0)
+  const reducer = (sum, item) => {
+    return sum + item.likes
+  }
+
+  return blogs.reduce(reducer, 0)
 }
 
 const favoriteBlog = (blogs) => {
-  return blogs.reduce((max, blog) => max.likes > blog.likes ? max : blog, {});
+  if (blogs.length < 1) {
+    return null
+  }
+  let mostLikes = blogs[0]
+  for (let i = 1; i < blogs.length; i++) {
+    if (blogs[i].likes > mostLikes.likes) {
+      mostLikes = blogs[i]
+    }
+  }
+  return {
+    title: mostLikes.title,
+    author: mostLikes.author,
+    likes: mostLikes.likes
+  }
 }
 
 const mostBlogs = (blogs) => {
-  if (!blogs.length) {
+  if(blogs.length < 1) {
     return null
   }
-
-  const authors = blogs.reduce((acc, blog) => {
-    acc[blog.author] = (acc[blog.author] || 0) + 1
-    return acc;
-  }, {});
-
-  let maxAuthor = Object.keys(authors)[0]
-
-  for (const author in authors) {
-    if (authors[author] > authors[maxAuthor]) {
-      maxAuthor = author
+  const authors = lodash.countBy(blogs, blog => blog.author)
+  let mostBlogsAuthor = ""
+  let mostBlogsAuthorBlogs = 0
+  for (let i in authors) {
+    if (authors[i] > mostBlogsAuthorBlogs) {
+        mostBlogsAuthor = i
+        mostBlogsAuthorBlogs = authors[i]
     }
   }
-
   return {
-    author: maxAuthor,
-    blogs: authors[maxAuthor]
+    author: mostBlogsAuthor,
+    blogs: mostBlogsAuthorBlogs
   }
 }
 
 const mostLikes = (blogs) => {
-  if (!blogs.length) {
+  if(blogs.length < 1) {
     return null
   }
-
-  const authors = blogs.reduce((acc, blog) => {
-    acc[blog.author] = (acc[blog.author] || 0) + blog.likes
-    return acc;
-  }, {});
-
-  let maxAuthor = Object.keys(authors)[0]
-
-  for (const author in authors) {
-    if (authors[author] > authors[maxAuthor]) {
-      maxAuthor = author
+  const authors = lodash.groupBy(blogs, blog => blog.author)
+  let mostLikesAuthor = ""
+  let mostLikesAuthorLikes = 0
+  for (let i in authors) {
+    let sumOfLikes = lodash.sum(authors[i].map(blog => blog.likes))
+    if (sumOfLikes > mostLikesAuthorLikes) {
+        mostLikesAuthor = i
+        mostLikesAuthorLikes = sumOfLikes
     }
   }
-
   return {
-    author: maxAuthor,
-    likes: authors[maxAuthor]
+    author: mostLikesAuthor,
+    likes: mostLikesAuthorLikes
   }
 }
 
 module.exports = {
-  dummy,
-  totalLikes,
-  favoriteBlog,
-  mostBlogs,
-  mostLikes
+  dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes
 }

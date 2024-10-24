@@ -1,62 +1,76 @@
 const jwt = require('jsonwebtoken')
-const router = require('express').Router()
+const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
-const userExtractor = require('../utils/middleware').userExtractor
+const { userExtractor } = require('../utils/middleware')
 
-router.get('/', async (request, response) => {
+blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog
     .find({}).populate('user', { username: 1, name: 1 })
-
+  
   response.json(blogs)
 })
 
-router.post('/', userExtractor, async (request, response) => {
-  const blog = new Blog(request.body)
-
+blogsRouter.post('/', userExtractor, async (request, response) => {
+  const body = request.body
+  // console.log('request.token:', request.token)
+  // const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  // const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  // if (!decodedToken.id) {
+  //   return response.status(401).json({ error: 'token invalid' })
+  // }
+  // const user = await User.findById(decodedToken.id) // VANHA
   const user = request.user
 
-  if (!user ) {
-    return response.status(403).json({ error: 'user missing' })
-  }  
+  const blog = new Blog({
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes,
+    user: user._id
+  })
 
-  if (!blog.title || !blog.url ) {
-    return response.status(400).json({ error: 'title or url missing' })
-  }   
+  if (!blog.likes) {
+    blog.likes = 0
+  }
 
-  blog.likes = blog.likes | 0
-  blog.user = user
-  user.blogs = user.blogs.concat(blog._id)
+  if (!blog.title || !blog.url) {
+    response.status(400).end()
+  } else {
+    const savedBlog = await blog.save()
+    user.blogs = user.blogs.concat(savedBlog._id)
+    await user.save()
 
-  await user.save()
-
-  const savedBlog = await blog.save()
-
-  response.status(201).json(savedBlog)
+    response.status(201).json(savedBlog)  
+  }
 })
 
-router.delete('/:id', userExtractor, async (request, response) => {
-  const user = request.user
+blogsRouter.delete('/:id', userExtractor, async (request, response) => {
+  // const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  // if (!decodedToken.id) {
+  //   return response.status(401).json({ error: 'token invalid' })
+  // }
 
+  // const user = await User.findById(decodedToken.id) // VANHA
+  const user = request.user
   const blog = await Blog.findById(request.params.id)
-  if (!blog) {
-    return response.status(204).end()
+
+  // console.log('user:', user)
+  // console.log('user._id.toString():', user._id.toString())
+  // const bloginUserId = await request.params.user.id.toString()
+  // const xxxxx = await request.params
+  // console.log('request.params.user.id.toString():', request.params.user.id.toString())
+  // console.log('blogUserId:', blog.user.toString())
+
+  if (user._id.toString() === blog.user.toString()) {
+    await Blog.findByIdAndRemove(request.params.id)
+    response.status(204).end()
+  } else {
+    return response.status(401).json({ error: 'not authorized to delete' })
   }
-
-  if ( blog.user &&  user.id.toString() !== blog.user.toString() ) {
-    return response.status(403).json({ error: 'user not authorized' })
-  }
-
-  await blog.deleteOne()
-
-  user.blogs = user.blogs.filter(b => b._id.toString() !== blog._id.toString())
-
-  await user.save()
-
-  response.status(204).end()
 })
 
-router.put('/:id', async (request, response) => {
+blogsRouter.put('/:id', async (request, response) => {
   const body = request.body
 
   const blog = {
@@ -66,8 +80,9 @@ router.put('/:id', async (request, response) => {
     likes: body.likes
   }
 
-  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true }).populate('user', { username: 1, name: 1 })
+  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+
   response.json(updatedBlog)
 })
 
-module.exports = router
+module.exports = blogsRouter
