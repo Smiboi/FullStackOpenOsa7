@@ -1,10 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvbXBwYSIsImlkIjoiNjQ2MjY2ODk2OTNlZDE4OTNiZDAwNTIwIiwiaWF0IjoxNjg0MjU3NzUyfQ.D0TH8pIH9WaTTDYxj6AqoBxHhZWSlfBM-77FSNKBC0s
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InV1c2kiLCJpZCI6IjY3NGVkZGMxNDQ2OWZjODk3NzRiNmFlNCIsImlhdCI6MTczMzIyMTk2M30.qzubSRQs1PXkwqRKUwADu3-pLBYb7V2TfXNEVzCfui8
 
 {
-    "title": "Blogi Jomban",
-    "author": "Joona Tölkki",
-    "url": "https://www.jobe.fi",
-    "likes": 9
+    "title": "Uutiset Uusimmat",
+    "author": "Uusi Uutinen",
+    "url": "https://www.uutiset.fi",
+    "likes": 10
 }
