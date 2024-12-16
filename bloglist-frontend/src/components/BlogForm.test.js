@@ -9,7 +9,7 @@ describe('<BlogForm />', () => {
     const user = userEvent.setup()
     const createBlog = jest.fn()
 
-    render(<BlogForm createBlog={createBlog} />)
+    render(<BlogForm createBlog={createBlog}/>)
 
     const titleInput = screen.getByPlaceholderText('title of the blog')
     const authorInput = screen.getByPlaceholderText('author of the blog')
