@@ -19,9 +19,7 @@ const App = () => {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
+    blogService.getAll().then((blogs) => setBlogs(blogs))
   }, [])
 
   useEffect(() => {
@@ -42,13 +40,13 @@ const App = () => {
     // }
     blogFormRef.current.toggleVisibility()
 
-    blogService
-      .create(blogObject)
-      .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-      })
+    blogService.create(blogObject).then((returnedBlog) => {
+      setBlogs(blogs.concat(returnedBlog))
+    })
 
-    setInfoMessage(`a new blog ${blogObject.title} from ${blogObject.author} added`)
+    setInfoMessage(
+      `a new blog ${blogObject.title} from ${blogObject.author} added`,
+    )
     setTimeout(() => {
       setInfoMessage(null)
     }, 5000)
@@ -77,12 +75,11 @@ const App = () => {
 
     try {
       const user = await loginService.login({
-        username, password,
+        username,
+        password,
       })
 
-      window.localStorage.setItem(
-        'loggedBlogappUser', JSON.stringify(user)
-      )
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
 
       blogService.setToken(user.token)
       setUser(user)
@@ -111,7 +108,7 @@ const App = () => {
   }
 
   const addLike = async (id) => {
-    const blog = blogs.find(b => b.id === id)
+    const blog = blogs.find((b) => b.id === id)
     const changedBlog = {
       title: blog.title,
       author: blog.author,
@@ -124,7 +121,7 @@ const App = () => {
     // console.log('blogs before:', blogs)
 
     const returnedBlog = await blogService.update(id, changedBlog)
-    setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
+    setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)))
     // console.log('blogs after:', blogs)
     // blogService
     //   .update(id, changedBlog).then(returnedBlog => {
@@ -134,11 +131,9 @@ const App = () => {
 
   const removeBlog = (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      blogService
-        .remove(blog.id, blogService.setToken(user.token))
-        .then(() => {
-          setBlogs(blogs.filter(single_blog => single_blog.id !== blog.id))
-        })
+      blogService.remove(blog.id, blogService.setToken(user.token)).then(() => {
+        setBlogs(blogs.filter((single_blog) => single_blog.id !== blog.id))
+      })
     }
   }
 
@@ -156,7 +151,7 @@ const App = () => {
           <div>
             username
             <input
-              id='username'
+              id="username"
               type="text"
               value={username}
               name="Username"
@@ -166,14 +161,16 @@ const App = () => {
           <div>
             password
             <input
-              id='password'
+              id="password"
               type="password"
               value={password}
               name="Password"
               onChange={({ target }) => setPassword(target.value)}
             />
           </div>
-          <button id="login-button" type="submit">login</button>
+          <button id="login-button" type="submit">
+            login
+          </button>
         </form>
       </div>
     )
@@ -189,23 +186,27 @@ const App = () => {
       <form onSubmit={handleLogout}>
         <div>
           <>{user.name} logged in</>
-          <button id="logout-button" type="submit">logout</button>
+          <button id="logout-button" type="submit">
+            logout
+          </button>
         </div>
       </form>
 
-      <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-        <BlogForm createBlog={addBlog}/>
+      <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+        <BlogForm createBlog={addBlog} />
       </Togglable>
 
       <h2>blog list</h2>
-      {blogs.sort((blog1, blog2) => blog1.likes - blog2.likes).map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          addLike={() => addLike(blog.id)}
-          removeBlog={removeBlog}
-        />
-      )}
+      {blogs
+        .sort((blog1, blog2) => blog1.likes - blog2.likes)
+        .map((blog) => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            addLike={() => addLike(blog.id)}
+            removeBlog={removeBlog}
+          />
+        ))}
     </div>
   )
 }
