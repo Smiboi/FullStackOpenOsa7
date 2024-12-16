@@ -1,37 +1,37 @@
-describe('Blog app', function() {
-  beforeEach(function() {
+describe('Blog app', function () {
+  beforeEach(function () {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
     const user1 = {
       name: 'Matti Meikäläinen',
       username: 'masa',
-      password: 'meikä'
+      password: 'meikä',
     }
     const user2 = {
       name: 'Maija Teikäläinen',
       username: 'maja',
-      password: 'teikä'
+      password: 'teikä',
     }
     cy.request('POST', 'http://localhost:3003/api/users/', user1)
     cy.request('POST', 'http://localhost:3003/api/users/', user2)
     cy.visit('http://localhost:3000')
   })
 
-  it('Login form is shown', function() {
+  it('Login form is shown', function () {
     cy.visit('http://localhost:3000')
     cy.contains('login to application')
     cy.contains('username')
     cy.contains('password')
   })
 
-  describe('Login',function() {
-    it('succeeds with correct credentials', function() {
+  describe('Login', function () {
+    it('succeeds with correct credentials', function () {
       cy.get('#username').type('masa')
       cy.get('#password').type('meikä')
       cy.get('#login-button').click()
       cy.contains('Matti Meikäläinen logged in')
     })
 
-    it('fails with wrong credentials', function() {
+    it('fails with wrong credentials', function () {
       cy.get('#username').type('masa')
       cy.get('#password').type('meikäläinen')
       cy.get('#login-button').click()
@@ -39,8 +39,8 @@ describe('Blog app', function() {
     })
   })
 
-  describe('When logged in and there is at least one blog in the list', function() {
-    beforeEach(function() {
+  describe('When logged in and there is at least one blog in the list', function () {
+    beforeEach(function () {
       cy.get('#username').type('masa')
       cy.get('#password').type('meikä')
       cy.get('#login-button').click()
@@ -51,7 +51,7 @@ describe('Blog app', function() {
       cy.get('#create-button').click()
     })
 
-    it('A blog can be created', function() {
+    it('A blog can be created', function () {
       cy.contains('create new blog').click()
       cy.get('#title').type('Hieno blogi')
       cy.get('#author').type('Jarmo Manner')
@@ -60,7 +60,7 @@ describe('Blog app', function() {
       cy.contains('Hieno blogi by Jarmo Manner')
     })
 
-    it('A blog can be liked', function() {
+    it('A blog can be liked', function () {
       cy.contains('Awesome blog by Jared Johnson').contains('view').click()
       cy.contains('Awesome blog by Jared Johnson').contains('like').click()
       cy.contains('Awesome blog by Jared Johnson').contains('likes: 1')
@@ -82,8 +82,8 @@ describe('Blog app', function() {
     })
   })
 
-  describe('When logged in and there is multiple blogs in the list', function() {
-    beforeEach(function() {
+  describe('When logged in and there is multiple blogs in the list', function () {
+    beforeEach(function () {
       cy.get('#username').type('masa')
       cy.get('#password').type('meikä')
       cy.get('#login-button').click()
@@ -104,16 +104,28 @@ describe('Blog app', function() {
       cy.get('#create-button').click()
     })
 
-    it('Blogs are sorted by likes', function() {
+    it('Blogs are sorted by likes', function () {
       cy.contains('Blog with 1 like by Kyösti Ykkönen').contains('view').click()
       cy.contains('Blog with 1 like by Kyösti Ykkönen').contains('like').click()
-      cy.contains('Blog with 2 likes by Kyösti Kakkonen').contains('view').click()
-      cy.contains('Blog with 2 likes by Kyösti Kakkonen').contains('like').click()
+      cy.contains('Blog with 2 likes by Kyösti Kakkonen')
+        .contains('view')
+        .click()
+      cy.contains('Blog with 2 likes by Kyösti Kakkonen')
+        .contains('like')
+        .click()
       cy.contains('Blog with 2 likes by Kyösti Kakkonen').contains('likes: 1')
-      cy.contains('Blog with 2 likes by Kyösti Kakkonen').contains('like').click()
-      cy.get('.blog').eq(0).should('contain', 'Blog with 0 likes by Kyösti Nollanen')
-      cy.get('.blog').eq(1).should('contain', 'Blog with 1 like by Kyösti Ykkönen')
-      cy.get('.blog').eq(2).should('contain', 'Blog with 2 likes by Kyösti Kakkonen')
+      cy.contains('Blog with 2 likes by Kyösti Kakkonen')
+        .contains('like')
+        .click()
+      cy.get('.blog')
+        .eq(0)
+        .should('contain', 'Blog with 0 likes by Kyösti Nollanen')
+      cy.get('.blog')
+        .eq(1)
+        .should('contain', 'Blog with 1 like by Kyösti Ykkönen')
+      cy.get('.blog')
+        .eq(2)
+        .should('contain', 'Blog with 2 likes by Kyösti Kakkonen')
     })
   })
 })

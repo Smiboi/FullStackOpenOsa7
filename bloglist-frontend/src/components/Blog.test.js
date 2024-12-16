@@ -10,12 +10,14 @@ describe('<Blog />', () => {
       title: 'Jukka Kukkulan sukka',
       author: 'Jukka Kukkula',
       url: 'www.jukka.fi',
-      likes: 5
+      likes: 5,
     }
 
     render(<Blog blog={blog} />)
 
-    const elementTitleAuthor = screen.getByText('Jukka Kukkulan sukka by Jukka Kukkula')
+    const elementTitleAuthor = screen.getByText(
+      'Jukka Kukkulan sukka by Jukka Kukkula',
+    )
     expect(elementTitleAuthor).toBeDefined()
 
     const elementUrl = screen.queryByText('www.jukka.fi')
@@ -34,8 +36,8 @@ describe('<Blog />', () => {
       user: {
         username: 'repe',
         name: 'Repe Sorsa',
-        id: 'testid'
-      }
+        id: 'testid',
+      },
     }
 
     const mockHandler = jest.fn()
@@ -65,8 +67,8 @@ describe('<Blog />', () => {
       user: {
         username: 'repe',
         name: 'Repe Sorsa',
-        id: 'testid'
-      }
+        id: 'testid',
+      },
     }
 
     const mockHandler = jest.fn()

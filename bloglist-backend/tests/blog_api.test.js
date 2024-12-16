@@ -32,17 +32,15 @@ describe('blog tests', () => {
   test('a specific blog is within the returned notes', async () => {
     const response = await api.get('/api/blogs')
 
-    const titles = response.body.map(r => r.title)
+    const titles = response.body.map((r) => r.title)
 
-    expect(titles).toContain(
-      'Jarkon ploki'
-    )
+    expect(titles).toContain('Jarkon ploki')
   })
 
   test('blog has an id', async () => {
-      const response = await api.get('/api/blogs')
+    const response = await api.get('/api/blogs')
 
-      expect(response.body[0].id).toBeDefined()
+    expect(response.body[0].id).toBeDefined()
   })
 
   test('blog cannot be added without token', async () => {
@@ -50,7 +48,7 @@ describe('blog tests', () => {
       title: 'Roskaruokablogi',
       author: 'MC Donald',
       url: 'https://www.ruokea.fi',
-      likes: 6
+      likes: 6,
     }
 
     await api
@@ -94,7 +92,7 @@ describe('blog tests', () => {
 
     const newLogin = {
       username: 'uusi',
-      password: 'salasana'
+      password: 'salasana',
     }
 
     // const userit = await helper.usersInDb()
@@ -112,7 +110,7 @@ describe('blog tests', () => {
       title: 'Roskaruokablogi',
       author: 'MC Donald',
       url: 'https://www.ruokea.fi',
-      likes: 6
+      likes: 6,
     }
 
     await api
@@ -125,10 +123,8 @@ describe('blog tests', () => {
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
 
-    const titles = blogsAtEnd.map(n => n.title)
-    expect(titles).toContain(
-      'Roskaruokablogi'
-    )
+    const titles = blogsAtEnd.map((n) => n.title)
+    expect(titles).toContain('Roskaruokablogi')
   })
 
   test('if likes not set, set likes to zero', async () => {
@@ -146,7 +142,7 @@ describe('blog tests', () => {
 
     const newLogin = {
       username: 'uusi2',
-      password: 'salasana2'
+      password: 'salasana2',
     }
 
     const loginResponse = await api
@@ -160,9 +156,9 @@ describe('blog tests', () => {
     const newBlog = {
       title: 'Roskaruokablogi',
       author: 'MC Donald',
-      url: 'https://www.ruokea.fi'
+      url: 'https://www.ruokea.fi',
     }
-    
+
     await api
       .post('/api/blogs')
       .send(newBlog)
@@ -190,7 +186,7 @@ describe('blog tests', () => {
 
     const newLogin = {
       username: 'uusi4',
-      password: 'salasana4'
+      password: 'salasana4',
     }
 
     const loginResponse = await api
@@ -204,12 +200,12 @@ describe('blog tests', () => {
     const newBlog1 = {
       title: 'Roskaruokablogi',
       author: 'MC Donald',
-      likes: 6
+      likes: 6,
     }
     const newBlog2 = {
       author: 'MC Donald',
       url: 'https://www.ruokea.fi',
-      likes: 6
+      likes: 6,
     }
 
     await api
@@ -243,7 +239,7 @@ describe('blog tests', () => {
 
     const newLogin = {
       username: 'uusi3',
-      password: 'salasana3'
+      password: 'salasana3',
     }
 
     const loginResponse = await api
@@ -258,7 +254,7 @@ describe('blog tests', () => {
       title: 'Roskaruokablogi',
       author: 'MC Donald',
       url: 'https://www.ruokea.fi',
-      likes: 6
+      likes: 6,
     }
 
     await api
@@ -283,11 +279,9 @@ describe('blog tests', () => {
 
     const blogsAtEnd = await helper.blogsInDb()
 
-    expect(blogsAtEnd).toHaveLength(
-      blogsAtStart.length - 1
-    )
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1)
 
-    const titles = blogsAtEnd.map(r => r.title)
+    const titles = blogsAtEnd.map((r) => r.title)
 
     expect(titles).not.toContain(blogToDelete.title)
   })
@@ -299,14 +293,11 @@ describe('blog tests', () => {
     const newBlog = {
       title: 'Jarkon ploki',
       author: 'Jarkko Jurkka',
-      url: "https://www.jartsunosote.com",
-      likes: 100
+      url: 'https://www.jartsunosote.com',
+      likes: 100,
     }
 
-    await api
-      .put(`/api/blogs/${blogToUpdate.id}`)
-      .send(newBlog)
-      .expect(200)
+    await api.put(`/api/blogs/${blogToUpdate.id}`).send(newBlog).expect(200)
 
     const blogsAtEnd = await helper.blogsInDb()
 
@@ -342,7 +333,7 @@ describe('when there is initially one user at db', () => {
     const usersAtEnd = await helper.usersInDb()
     expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
 
-    const usernames = usersAtEnd.map(u => u.username)
+    const usernames = usersAtEnd.map((u) => u.username)
     expect(usernames).toContain(newUser.username)
   })
 
@@ -387,7 +378,9 @@ describe('when there is initially one user at db', () => {
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
-    expect(result1.body.error).toContain('username and password must be at least 3 characters long')
+    expect(result1.body.error).toContain(
+      'username and password must be at least 3 characters long',
+    )
 
     const result2 = await api
       .post('/api/users')
@@ -395,7 +388,9 @@ describe('when there is initially one user at db', () => {
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
-    expect(result2.body.error).toContain('username and password must be at least 3 characters long')
+    expect(result2.body.error).toContain(
+      'username and password must be at least 3 characters long',
+    )
 
     const usersAtEnd = await helper.usersInDb()
     expect(usersAtEnd).toHaveLength(usersAtStart.length)
