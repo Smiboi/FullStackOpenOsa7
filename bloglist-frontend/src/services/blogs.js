@@ -1,7 +1,17 @@
 import axios from 'axios'
+
 const baseUrl = '/api/blogs'
 
 let token = null
+
+const loadUser = () => {
+  const user = window.localStorage.getItem('loggedBlogappUser')
+  return user ? JSON.parse(user) : null
+}
+
+const getConfit = () => ({
+  headers : { Authorization: `Bearer ${loadUser().token}` }
+})
 
 const setToken = (newToken) => {
   token = `Bearer ${newToken}`
@@ -26,9 +36,9 @@ const update = (id, newObject) => {
   return request.then((response) => response.data)
 }
 
-const remove = (id) => {
-  const request = axios.delete(`${baseUrl}/${id}`)
-  return request.then((response) => response.data)
+const remove = async (id) => {
+  const response = await axios.delete(`${baseUrl}/${id}`, getConfit())
+  return response.data
 }
 
 export default { getAll, setToken, create, update, remove }

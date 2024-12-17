@@ -1,10 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBvaXN0YWphIiwiaWQiOiI2NzYwN2QyZTM4NjRkZmY4ZTkzY2Q4YTgiLCJpYXQiOjE3MzQzNzY3NzF9.4q0Jk85f1zVQJlqtALrTeqirgWwhOiKzHVbgmhPF6bA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBvaXN0YWphIiwiaWQiOiI2NzYwN2QyZTM4NjRkZmY4ZTkzY2Q4YTgiLCJpYXQiOjE3MzQ0NDk5MTl9.OJttMjmByRGPXYiWWaZ7bX9vVoq1oERo0QtGeakVnps
 
 {
-    "title": "Poistettava",
-    "author": "eitietoa",
-    "url": "https://www.jaa.fi",
-    "likes": 5
+    "title": "vscode",
+    "author": "vscode",
+    "url": "https://www.vscode.fi",
+    "likes": 1
 }
