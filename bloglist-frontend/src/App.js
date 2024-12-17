@@ -1,15 +1,18 @@
 import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
+import User from './components/User'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import InfoNotification from './components/InfoNotification'
 import ErrorNotification from './components/ErrorNotification'
 import blogService from './services/blogs'
+import userService from './services/users'
 import loginService from './services/login'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
+  const [users, setUsers] = useState([])
   // const [newTitle, setNewTitle] = useState('')
   // const [newAuthor, setNewAuthor] = useState('')
   // const [newUrl, setNewUrl] = useState('')
@@ -21,6 +24,10 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
+  }, [])
+
+  useEffect(() => {
+    userService.getAll().then((users) => setUsers(users))
   }, [])
 
   useEffect(() => {
@@ -150,7 +157,7 @@ const App = () => {
         <BlogForm createBlog={addBlog} />
       </Togglable>
 
-      <h2>blog list</h2>
+      <h2>Blogs</h2>
       {blogs
         .sort((blog1, blog2) => blog1.likes - blog2.likes)
         .map((blog) => (
@@ -161,6 +168,28 @@ const App = () => {
             removeBlog={removeBlog}
           />
         ))}
+    </div>
+  )
+
+  const Users = () => (
+    <div>
+      <h2>Users</h2>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>blogs created</th>
+          </tr>
+        </thead>
+        {users
+          .sort((user1, user2) => user2.blogs.length - user1.blogs.length)
+          .map((user) => (
+            <User
+              key={user.id}
+              user={user}
+            />
+          ))}
+      </table>
     </div>
   )
 
@@ -227,7 +256,7 @@ const App = () => {
 
       <Routes>
         <Route path="/" element={<Blogs />} />
-        <Route path="/users" element={{/* <Users /> */}} />
+        <Route path="/users" element={<Users />} />
       </Routes>
     </Router>
   )
