@@ -6,6 +6,7 @@ import InfoNotification from './components/InfoNotification'
 import ErrorNotification from './components/ErrorNotification'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -139,6 +140,30 @@ const App = () => {
 
   const blogFormRef = useRef()
 
+  const padding = {
+    padding: 5
+  }
+
+  const Blogs = () => (
+    <div>
+      <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+        <BlogForm createBlog={addBlog} />
+      </Togglable>
+
+      <h2>blog list</h2>
+      {blogs
+        .sort((blog1, blog2) => blog1.likes - blog2.likes)
+        .map((blog) => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            addLike={() => addLike(blog.id)}
+            removeBlog={removeBlog}
+          />
+        ))}
+    </div>
+  )
+
   if (user === null) {
     return (
       <div>
@@ -177,37 +202,34 @@ const App = () => {
   }
 
   return (
-    <div>
-      <h1>blogs</h1>
+    <Router>
+      <div>
+        <Link style={padding} to="/">notes</Link>
+        <Link style={padding} to="/users">users</Link>
 
-      <InfoNotification message={infoMessage} />
-      <ErrorNotification message={errorMessage} />
+        <form onSubmit={handleLogout}>
+          <div>
+            <>{user.name} logged in </>
+            <button id="logout-button" type="submit">
+              logout
+            </button>
+          </div>
+        </form>
+      </div>
 
-      <form onSubmit={handleLogout}>
-        <div>
-          <>{user.name} logged in</>
-          <button id="logout-button" type="submit">
-            logout
-          </button>
-        </div>
-      </form>
+      <div>
+        <h1>blog app</h1>
 
-      <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-        <BlogForm createBlog={addBlog} />
-      </Togglable>
+        <InfoNotification message={infoMessage} />
+        <ErrorNotification message={errorMessage} />
 
-      <h2>blog list</h2>
-      {blogs
-        .sort((blog1, blog2) => blog1.likes - blog2.likes)
-        .map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            addLike={() => addLike(blog.id)}
-            removeBlog={removeBlog}
-          />
-        ))}
-    </div>
+      </div>
+
+      <Routes>
+        <Route path="/" element={<Blogs />} />
+        <Route path="/users" element={{/* <Users /> */}} />
+      </Routes>
+    </Router>
   )
 }
 
