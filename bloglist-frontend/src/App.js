@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
-import User from './components/User'
+import UserPage from './components/UserPage'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import InfoNotification from './components/InfoNotification'
@@ -171,6 +171,19 @@ const App = () => {
     </div>
   )
 
+  const User = ({ user }) => {
+    return (
+      <tbody>
+        <tr>
+          <td>
+            <Link to={`/users/${user.id}`}>{user.name}</Link>
+          </td>
+          <td>{user.blogs.length}</td>
+        </tr>
+      </tbody>
+    )
+  }
+
   const Users = () => (
     <div>
       <h2>Users</h2>
@@ -255,6 +268,7 @@ const App = () => {
       </div>
 
       <Routes>
+        <Route path="/users/:id" element={<UserPage users={users} />} />
         <Route path="/" element={<Blogs />} />
         <Route path="/users" element={<Users />} />
       </Routes>
