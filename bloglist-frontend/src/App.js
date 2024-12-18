@@ -10,6 +10,26 @@ import blogService from './services/blogs'
 import userService from './services/users'
 import loginService from './services/login'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import {
+  Table,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+  TextField,
+  Button,
+  AppBar,
+  Toolbar,
+  IconButton,
+} from '@mui/material'
+import styled from 'styled-components'
+
+const Page = styled.div`
+padding: 1em;
+background: papayawhip;
+`
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -148,10 +168,6 @@ const App = () => {
 
   const blogFormRef = useRef()
 
-  const padding = {
-    padding: 5
-  }
-
   const Blogs = () => (
     <div>
       <Togglable buttonLabel="create new blog" ref={blogFormRef}>
@@ -172,109 +188,127 @@ const App = () => {
     </div>
   )
 
-  const User = ({ user }) => {
-    return (
-      <tbody>
-        <tr>
-          <td>
-            <Link to={`/users/${user.id}`}>{user.name}</Link>
-          </td>
-          <td>{user.blogs.length}</td>
-        </tr>
-      </tbody>
-    )
-  }
+  // const User = ({ user }) => {
+  //   return (
+  //     <tbody>
+  //       <tr>
+  //         <td>
+  //           <Link to={`/users/${user.id}`}>{user.name}</Link>
+  //         </td>
+  //         <td>{user.blogs.length}</td>
+  //       </tr>
+  //     </tbody>
+  //   )
+  // }
 
   const Users = () => (
     <div>
       <h2>Users</h2>
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>blogs created</th>
-          </tr>
-        </thead>
-        {users
-          .sort((user1, user2) => user2.blogs.length - user1.blogs.length)
-          .map((user) => (
-            <User
-              key={user.id}
-              user={user}
-            />
-          ))}
-      </table>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell></TableCell>
+              <TableCell><b>blogs created</b></TableCell>
+            </TableRow>
+          </TableHead>
+          {users
+            .sort((user1, user2) => user2.blogs.length - user1.blogs.length)
+            .map((user) => (
+              <TableBody key={user.id}>
+                <TableRow>
+                  <TableCell>
+                    <Link to={`/users/${user.id}`}>{user.name}</Link>
+                  </TableCell>
+                  <TableCell>{user.blogs.length}</TableCell>
+                </TableRow>
+              </TableBody>
+            ))}
+        </Table>
+      </TableContainer>
     </div>
   )
 
   if (user === null) {
     return (
-      <div>
-        <h2>login to application</h2>
+      <Page>
+        <div>
+          <h2>login to application</h2>
 
-        <InfoNotification message={infoMessage} />
-        <ErrorNotification message={errorMessage} />
+          <InfoNotification message={infoMessage} />
+          <ErrorNotification message={errorMessage} />
 
-        <form onSubmit={handleLogin}>
-          <div>
-            username
-            <input
-              id="username"
-              type="text"
-              value={username}
-              name="Username"
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            password
-            <input
-              id="password"
-              type="password"
-              value={password}
-              name="Password"
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button id="login-button" type="submit">
-            login
-          </button>
-        </form>
-      </div>
+          <form onSubmit={handleLogin}>
+            <div>
+              <TextField
+                label="username"
+                id="username"
+                type="text"
+                value={username}
+                name="Username"
+                onChange={({ target }) => setUsername(target.value)}
+              />
+            </div>
+            <div>
+              <TextField
+                label="password"
+                id="password"
+                type="password"
+                value={password}
+                name="Password"
+                onChange={({ target }) => setPassword(target.value)}
+              />
+            </div>
+            <Button variant="contained" color="primary" id="login-button" type="submit">
+              login
+            </Button>
+          </form>
+        </div>
+      </Page>
     )
   }
 
   return (
-    <Router>
-      <div>
-        <Link style={padding} to="/">blogs</Link>
-        <Link style={padding} to="/users">users</Link>
+    <Page>
+      <Router>
+        <div>
+          <AppBar position="static">
+            <Toolbar>
+              <IconButton edge="start" color="inherit" aria-label="menu"></IconButton>
+              <Button color="inherit" component={Link} to="/">
+                blogs
+              </Button>
+              <Button color="inherit" component={Link} to="/users">
+                users
+              </Button>
+            </Toolbar>
+          </AppBar>
+          <form onSubmit={handleLogout}>
+            <div>
+              <>{user.name} logged in </>
+              <Button variant="contained" color="secondary" id="logout-button" type="submit">
+                logout
+              </Button>
+            </div>
+          </form>
+        </div>
 
-        <form onSubmit={handleLogout}>
-          <div>
-            <>{user.name} logged in </>
-            <button id="logout-button" type="submit">
-              logout
-            </button>
-          </div>
-        </form>
-      </div>
+        <div>
+          <h1>blog app</h1>
 
-      <div>
-        <h1>blog app</h1>
+          <InfoNotification message={infoMessage} />
+          <ErrorNotification message={errorMessage} />
 
-        <InfoNotification message={infoMessage} />
-        <ErrorNotification message={errorMessage} />
+        </div>
 
-      </div>
-
-      <Routes>
-        <Route path="/" element={<Blogs />} />
-        <Route path="/users" element={<Users />} />
-        <Route path="/users/:id" element={<UserPage users={users} />} />
-        <Route path="/blogs/:id" element={<BlogPage blogs={blogs} users={users} setBlogs={() => setBlogs(blogs)}/>} />
-      </Routes>
-    </Router>
+        <Routes>
+          <Route path="/" element={<Blogs />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/users/:id" element={<UserPage users={users} />} />
+          <Route path="/blogs/:id" element={<BlogPage blogs={blogs} users={users} setBlogs={() => setBlogs(blogs)}/>} />
+        </Routes>
+      </Router>
+    </Page>
   )
 }
 
