@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import UserPage from './components/UserPage'
+import BlogPage from './components/BlogPage'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import InfoNotification from './components/InfoNotification'
@@ -246,7 +247,7 @@ const App = () => {
   return (
     <Router>
       <div>
-        <Link style={padding} to="/">notes</Link>
+        <Link style={padding} to="/">blogs</Link>
         <Link style={padding} to="/users">users</Link>
 
         <form onSubmit={handleLogout}>
@@ -268,9 +269,10 @@ const App = () => {
       </div>
 
       <Routes>
-        <Route path="/users/:id" element={<UserPage users={users} />} />
         <Route path="/" element={<Blogs />} />
         <Route path="/users" element={<Users />} />
+        <Route path="/users/:id" element={<UserPage users={users} />} />
+        <Route path="/blogs/:id" element={<BlogPage blogs={blogs} users={users} setBlogs={() => setBlogs(blogs)}/>} />
       </Routes>
     </Router>
   )

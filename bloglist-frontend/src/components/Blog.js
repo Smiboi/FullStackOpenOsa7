@@ -1,11 +1,12 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 const Blog = ({ blog, addLike, removeBlog }) => {
   const [viewInfo, toggleInfo] = useState(false)
   const label = viewInfo ? 'hide' : 'view'
   return (
     <div className="blog">
-      {blog.title} by {blog.author}
+      <Link to={`/blogs/${blog.id}`}>{blog.title} by {blog.author}</Link>
       <button onClick={() => toggleInfo(!viewInfo)}>{label}</button>
       {viewInfo && (
         <div>
